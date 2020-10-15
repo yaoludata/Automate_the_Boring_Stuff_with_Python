@@ -41,7 +41,7 @@ for file in allfiles:
     docpath = os.path.join(filepath, file)
     name = os.path.splitext(file)[0]
     if name in name_area.keys():
-        #create the target path which we will move our file to: /Users/Wendy/student information/area
+        #create the target path which we will move our file to: /Users/Wendy/student_information/area
         target_path = os.path.join(filepath, name_area[name])
         #create the directory if it is not exist
         if not os.path.exists(target_path):
