@@ -9,7 +9,7 @@
 #Please use the knowledge you have learned to help Wendy complete the classification of students. The working directory of the current program is /Users/Wendy/
 
 
-#Goal: category student's profiles files according to their regions.
+#Goal: category students' profile files according to their regions.
 
 # import
 import openpyxl
