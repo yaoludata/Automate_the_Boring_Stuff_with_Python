@@ -24,17 +24,17 @@ allfiles = os.listdir(filepath)
 #read inforamation workbook
 info = openpyxl.load_workbook('/Users/Wendy/student_area.xlsx', data_only =True)
 #read worksheet
-info1 = info['Student Area Sheet']
+info_ws = info['Student Area Sheet']
 
 #create a dictionary
 name_area = {}
 
 #read the work sheet and find out where are the students come from and put in the dictionary
-for item in info1.rows:
-    sname = item[0].value
+for item in info_ws.rows:
+    student_name = item[0].value
     area = item[1].value
-    if sname != 'name':
-        name_area[sname] = area
+    if student_name != 'name':
+        name_area[student_name] = area
 
 #iterate the files in allfiles and match their area with name_area dictionary        
 for file in allfiles:
