@@ -34,7 +34,7 @@ def address(dirname):
         doc.save(path)
         count = count + 1
 
-# the location of the word file
+# the location of the word files
 
 dirname = r'C:\Users\OEM\Desktop\board'
 address(dirname)
