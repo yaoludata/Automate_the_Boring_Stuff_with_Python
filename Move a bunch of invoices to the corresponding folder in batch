@@ -1,0 +1,26 @@
+# Move a bunch of invoices to the corresponding folder in batch according to their company
+
+# Import
+
+import os
+import pdfplumber
+import docx
+import shutil
+
+# read the location for each invoice
+
+path = r'C:\Users\OEM\Desktop\invoice'
+allItems = os.listdir(path)
+
+# move to difference folder according to their company
+
+for item in allItems:
+    pdfpath = os.path.join(path, item)
+    #target = r'C:\Users\OEM\Dropbox\VICKY2\Materials\Akron\NOV'
+    #target = r'C:\Users\OEM\Dropbox\VICKY2\Materials\Carters - D102185\NOV'
+    #target = r'C:\Users\OEM\Dropbox\VICKY2\Materials\PINK BIN\NOV\SWISH'
+    target = r'C:\Users\OEM\Dropbox\VICKY2\Materials\PINK BIN\NOV'
+    #target = r'C:\Users\OEM\Dropbox\VICKY2\Materials\Resene\NOV'
+    #target = r'C:\Users\OEM\Dropbox\VICKY2\Materials\EviroWast\NOV'
+    target_path = os.path.join(target, item)
+    shutil.move(pdfpath, target_path) # move from the old path to new path
