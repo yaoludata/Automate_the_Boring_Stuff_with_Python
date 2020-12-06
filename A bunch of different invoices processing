@@ -1,0 +1,29 @@
+# Enter a bunch of different invoices into a word document in batch
+
+# import
+
+import os
+import pdfplumber
+import docx
+
+
+file = docx.Document()
+
+# read the location of each invoice
+
+path = r'C:\Users\OEM\Desktop\invoice'
+allItems = os.listdir(path)
+print(allItems)
+
+# Enter a bunch of different invoices into a word document in batch
+
+for item in allItems:
+    pdfpath = os.path.join(path, item)
+    pdf = pdfplumber.open(pdfpath)
+    page = pdf.pages[0]
+    textData = page.extract_text()
+    file.add_paragraph(textData)
+
+# save the word file
+
+file.save(r'C:\Users\OEM\Desktop\result\result.docx')
