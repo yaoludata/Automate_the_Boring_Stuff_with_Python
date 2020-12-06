@@ -1,0 +1,40 @@
+# Enter different addresses in batches into many word documents
+
+# import 
+
+import os
+import docx
+
+# Create the address list
+
+rootdir = r'C:\Users\OEM\Desktop\name.txt'
+namelist = []
+with open(rootdir, 'r') as file_to_read:
+    while True:
+        line = file_to_read.readline()
+        if not line:
+            break
+        line = line.strip('\n')
+        namelist.append(line)
+print(namelist)
+
+
+# Enter different addresses in batches into many word documents into the specific area
+
+def address(dirname):
+    filelist = os.listdir(dirname)
+    count = 0
+    for file in filelist:
+        path = os.path.join(dirname, file)
+        doc = docx.Document(path)
+        table = doc.tables
+        add_cell = table[0].cell(1, 1)
+        address_text = add_cell.paragraphs[0] # the area which will be inputed the address
+        run1 = address_text.add_run(namelist[count])
+        doc.save(path)
+        count = count + 1
+
+# the location of the word file
+
+dirname = r'C:\Users\OEM\Desktop\board'
+address(dirname)
