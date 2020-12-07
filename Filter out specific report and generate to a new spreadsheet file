@@ -1,0 +1,44 @@
+# Filter out specific report and generate to a new spreadsheet file.
+
+
+# import
+
+import openpyxl
+from openpyxl import load_workbook, Workbook
+
+
+path = r'C:\Users\OEM\doc\work.xlsx'
+
+workbook = openpyxl.load_workbook(path)
+sheet = workbook['WO']
+
+work_order = sheet['A']
+
+row_list = []
+
+for cell in work_order:
+    if cell.value == 'WO8959652': # filter out the data which belong to this order
+        print(cell.row)
+        row_list.append(cell.row)
+
+new_workbook = Workbook()
+new_sheet = new_workbook.active
+
+
+header = sheet[2]
+header_lst = []
+for cell in header:
+    header_lst.append(cell.value)
+new_sheet.append(header_lst)Extract the eligible rows from the old table according to the row number, traverse the cells to get the value, and write it into the new table in the form of a list
+
+# Extract the eligible rows from the old table according to the row number, traverse the cells to get the value, and write it into the new table in the form of a list
+
+for row in row_list:
+    data_lst = []
+    for cell in sheet[row]:
+        data_lst.append(cell.value)
+    new_sheet.append(data_lst)
+
+# save to the new file
+
+new_workbook.save(r'C:\Users\OEM\Desktop\result\WO8959652.xlsx')
