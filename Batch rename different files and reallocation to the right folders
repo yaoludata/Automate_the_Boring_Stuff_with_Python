@@ -1,0 +1,45 @@
+# Batch rename different files and reallocation to the right folders
+
+# import 
+
+import os
+import shutil
+
+# Read the name list for each file
+
+rootdir = r'C:\Users\OEM\Desktop\name.txt'
+namelist = []
+with open(rootdir, 'r') as file_to_read:
+    while True:
+        line = file_to_read.readline()
+        if not line:
+            break
+        line = line.strip('\n')
+        namelist.append(line)
+print(namelist)
+
+# Batch rename different files and reallocation to the right folders
+
+def rename(dirname):
+    filelist = os.listdir(dirname)
+    count = 0
+    for file in filelist:
+        olddir = os.path.join(dirname, file)
+        if os.path.isdir(olddir):
+            continue
+        filename = os.path.splitext(file)[0]
+        filetype = os.path.splitext(file)[1]
+        newdir = os.path.join(dirname, 'M323 - ' + namelist[count] + filetype)
+        os.rename(olddir, newdir) # rename the file
+        target = r"C:\Users\OEM\M323\2020 - Nee"
+        target_path = os.path.join(target, 'M323 - ' + namelist[count] + filetype)
+        shutil.move(newdir, target_path) #reallocate the file
+        count = count + 1
+
+# original file location
+
+dirname = r'C:\Users\OEM\Desktop\LIST1'
+
+# run the rename function
+
+rename(dirname)
