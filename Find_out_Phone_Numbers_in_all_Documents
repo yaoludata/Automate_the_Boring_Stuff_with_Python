@@ -1,0 +1,149 @@
+# Read Word documents, Excel documents and PDF documents in this folder and its subfolders
+# find out the mobile phone numbers contained in the contents of all these documents, and then add them to the list phoneList in the form of strings.
+# Note: The phone number added to phoneList cannot be repeated.
+
+# import
+import docx
+import openpyxl
+import pdfplumber
+import os
+import re
+
+
+# use regular expression to find the phone number
+def findPhone(value):
+    # if the value is not str, convert to str (regular expression can only process str)
+    if type(value) != str:
+        value = str(value)
+    return re.findall('(1[3-9]\d{9})', value)
+
+# get phone from pdf
+def getPhoneFromPdf(path):
+    # set an empty list
+    result = []
+    # open pdf file
+    pdf = pdfplumber.open(path)
+    # read every page of the pdf file
+    for page in pdf.pages:
+        # extract the text for each page
+        text = page.extract_text()
+        # use findPhone() to find out the phone number and add into result
+        result.extend(findPhone(text))
+        # read the tables
+        tables = page.extract_tables()
+        # read all tables
+        for table in tables:
+            # read all rows
+            for row in table:
+                # read all cells
+                for cell in row:
+                    # use findPhone to find out the phone number and add into result
+                    result.extend(findPhone(cell))
+    return result
+
+# get phone from word
+def getPhoneFromWord(path):
+    # set an empty list
+    result = []
+    # read the word file
+    doc = docx.Document(path)
+    # read all paragraphs
+    for paragraph in doc.paragraphs:
+        # use findPhone() to find out the phone number and add into the result
+        result.extend((findPhone(paragraph.text)))
+    # read all tables
+    for table in doc.tables:
+        # read all rows
+        for row in table.rows:
+            # read all cells
+            for cell in row.cells:
+                # use findPhone() to find out the phone number and add into the result
+                result.extend(findPhone(cell.text))
+    return result
+
+# get phone from excel
+def getPhoneFromExcel(path):
+    # set an empty list
+    result = []
+    # read the excel file
+    wb = openpyxl.load_workbook(path)
+    # read all sheets
+    for sheet in wb.worksheets:
+        # read all rows
+        for row in sheet.rows:
+            # read all cells
+            for cell in row:
+                # use findPhone() to find out the phone number and add into the result
+                result.extend(findPhone(cell.value))
+    return result
+
+
+# Define a function to get all the phone numbers under the folder
+# Finally return the acquired phone number as a list
+def getPhoneFromFile(path):
+    # Gets the names of all files (folders) under the specified path
+    allItems = os.listdir(path)
+
+    # list for storing the path for all .docx, .xlsx, .pdf files in the directory
+    list = []
+
+    # find all '.docx', '.xlsx', '.pdf' files in the directory
+    for item in allItems:
+        extension = os.path.splitext(item)[1].lower()
+        secondpath = os.path.join(path, item)
+        if os.path.isdir(secondpath):  # check if the document is folder
+            secondfiles = os.listdir(secondpath)
+            for file1 in secondfiles:
+                thirdpath = os.path.join(secondpath, file1)
+                if not os.path.isdir(thirdpath):
+                    extension1 = os.path.splitext(file1)[1].lower()
+                    if extension1 in ['.docx', '.xlsx', '.pdf']:
+                        list.append(thirdpath)
+                else:
+                    thirdfile = os.listdir(thirdpath)
+                    for file2 in thirdfile:
+                        extension2 = os.path.splitext(file2)[1].lower()
+                        if extension2 in ['.docx', '.xlsx', '.pdf']:
+                            list.append(os.path.join(thirdpath, file2))
+        else:
+            if extension in ['.docx', '.xlsx', '.pdf']:
+                list.append(secondpath)
+
+    # define an empty list to store all phone numbers
+    result = []
+
+    # read all document(pdf, word, excel) files' paths
+    for document in list:
+        # detect the type of the document
+        exten = document.split('.')[1].lower()
+        # when document is word
+        if exten == 'docx':
+            # find out all phone numbers from word documents
+            wordresult = getPhoneFromWord(document)
+            # add the phone numbers to the result list
+            result.extend(wordresult)
+        # when document is excel
+        elif exten == 'xlsx':
+            # find out all phone numbers for excel documents
+            excelresult = getPhoneFromExcel(document)
+            # add the phone numbers to the result list
+            result.extend(excelresult)
+        # when document is pdf
+        elif exten == 'pdf':
+            # find out all phone numbers for pdf documents
+            pdfresult = getPhoneFromPdf(document)
+            # add the phone numbers to the result list
+            result.extend(pdfresult)
+
+    # return all phone numbers
+    return result
+
+# Call the getPhoneFromFile() by using the path : 'C:\Users\yaolu\Desktop\misc'
+# save all the phone numbers to the phoneList
+phoneList = getPhoneFromFile(r'C:\Users\yaolu\Desktop\misc')
+
+# use set to filter out the duplicate phone numbers
+phoneList = list(set(phoneList))
+
+# print all phone numbers from 'C:\Users\yaolu\Desktop\misc'
+print(phoneList)
